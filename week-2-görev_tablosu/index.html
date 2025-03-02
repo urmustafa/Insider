@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mustafa Tayyar</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <h1>Görev Yönetimi</h1>
+    
+    <div class="button-container">
+        <button id="filter">Sadece Tamamlananları Göster</button>
+        <button id="sort">Önceliğe Göre Sırala</button>
+    </div>
+    
+
+    <form id="taskForm">
+        <input type="text" id="taskTitle"  required>
+        <input type="text" id="taskDesc"  required>
+
+
+        <label>
+            <input type="radio" name="priority" value="Düşük"> Düşük
+        </label>
+        <label>
+            <input type="radio" name="priority" value="Orta"> Orta
+        </label>
+        <label>
+            <input type="radio" name="priority" value="Yüksek"> Yüksek
+        </label>
+        <button type="submit">Ekle</button>
+    </form>
+
+    <div id="taskList"></div>
+
+    <script src="script.js"></script>
+</body>
+</html>
