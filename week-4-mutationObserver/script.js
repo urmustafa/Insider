@@ -1,4 +1,3 @@
-
 //localStorage.clear();
 //sessionStorage.clear();
 
@@ -62,24 +61,26 @@ document.body.appendChild(reloadBtn);
 
 async function fetchUsers() {
     try {
+       // console.log('Kullanıcılar APIden çekiliyor...');
         const response = await fetch('https://jsonplaceholder.typicode.com/users');
         if (!response.ok) {
-            throw new Error('API yanıtı başarısız!');
+            throw new Error('API yanıtı başarısız...');
         }
         const users = await response.json();
-       // console.log('APIden gelen kullanıcılar:', users);
+        console.log('API\'den gelen kullanıcılar:', users);
         localStorage.setItem('users', JSON.stringify(users));
         renderUsers(users);
     } catch (error) {
-       // console.error('Veri çekme hatası:', error);
+        console.error('Veri çekme hatası:', error);
     }
 }
 
+
 function renderUsers(users) {
-    console.log('Rendering users:', users);
+    //console.log('Kullanıcılar ekrana yazdırılıyor:', users);
     const container = document.querySelector(appendLocation);
     if (!container) {
-       // console.error('Container yok');
+        console.error('Hata yok');
         return;
     }
     container.innerHTML = '';
@@ -90,27 +91,38 @@ function renderUsers(users) {
             container.appendChild(userDiv);
         });
     } else {
-        container.innerHTML = '<p>Hiç kullanıcı bulunamadı.</p>';
+        container.innerHTML = '<p>Hiç bir kullanıcı bulunamadı...</p>';
     }
     checkUsers();
 }
 
 
 function deleteUser(id) {
+   // console.log(`Kullanıcı siliniyor: ID ${id}`);
     let users = JSON.parse(localStorage.getItem('users')) || [];
+    const initialLength = users.length;
     users = users.filter(user => user.id !== id);
     localStorage.setItem('users', JSON.stringify(users));
+    
+    if (users.length < initialLength) {
+        console.log(`Kullanıcı başarıyla silindi: ID ${id}`);
+    } else {
+        console.warn(`Silme işlemi başarısız: ID ${id} bulunamadı`);
+    }
+
     renderUsers(users);
 }
 
 
 function checkUsers() {
     const users = JSON.parse(localStorage.getItem('users')) || [];
-   // console.log('Kullanıcılar:', users);
-    
+
+
     if (users.length === 0) {
-        sessionStorage.removeItem('reloaded');
+        sessionStorage.removeItem('reloaded'); 
         reloadBtn.style.display = 'block';
+
+        console.log('Tüm kullanıcılar silindi--- Yeniden yükleme butonu gösterildi.');
     } else {
         reloadBtn.style.display = 'none';
     }
@@ -118,25 +130,35 @@ function checkUsers() {
 
 
 function reloadUsers() {
+    
     if (!sessionStorage.getItem('reloaded')) {
         sessionStorage.setItem('reloaded', 'true');
+        //console.log('Kullanıcılar tekrar yükleniyor...');
         fetchUsers();
+    } else {
+        console.warn('Bu buton zaten bir kere kullanıldı, tekrar yüklenemez!');
     }
 }
 
 if (container) {
     const observer = new MutationObserver(checkUsers);
     observer.observe(container, { childList: true });
+    
+    //console.log('MutationObserver aktif');
 }
 
+
+window.addEventListener('storage', checkUsers);
+console.log('LocalStorage değişiklikleri dinleniyor.');
+
 if (!localStorage.getItem('users')) {
-   // console.log('Kullanıcılar localStorage yok APIden yükleniyor');
+    //console.log('LocalStorage boş, vrilrt çrkiliyor');
     fetchUsers();
 } else {
+    //console.log('LocalStorageda kullanıcılar var, ekrana yazdırılıyor.');
     const users = JSON.parse(localStorage.getItem('users'));
     renderUsers(users);
 }
-
 
 //localStorage.clear();
 //sessionStorage.clear();
